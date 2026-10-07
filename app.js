@@ -190,9 +190,9 @@
       const key = accountKey(row[accountColumns[0]]);
       const name = String(row[friendlyColumns[0]] ?? "").trim();
 
-      if (!key || !name) {
-        throw new Error(`Source row ${index + 1} needs an account number and friendly name.`);
-      }
+      if (!key) {
+  throw new Error(`Source row ${index + 1} needs an account number.`);
+    }
 
       if (map.has(key)) {
         duplicates++;
@@ -430,11 +430,14 @@
         ["Columns (Original → Final)", `${rows[0].length} → ${rows[0].length + 1}`]
       ]);
 
-      $("audit-message").className =
-        "audit-message" + (unmatched ? " warning" : "");
-      $("audit-message").textContent = unmatched
-        ? `Value checks passed. ${unmatched} nonblank rows have no mapping; their friendly names are blank. Review before downloading.`
-        : "All value and row checks passed. The updated worksheet is ready to download.";
+     const needsReview = unmatched > 0 || blankNames > 0;
+
+    $("audit-message").className =
+    "audit-message" + (needsReview ? " warning" : "");
+
+    $("audit-message").textContent = needsReview
+    ? `Value and row checks passed. ${unmatched} destination rows have no source mapping. ${blankNames} destination rows have blank friendly names in total, including unmatched rows. Review before downloading.`
+    : "All value and row checks passed. The updated worksheet is ready to download.";
 
       $("merge-results").hidden = false;
       $("download-output").disabled = false;
