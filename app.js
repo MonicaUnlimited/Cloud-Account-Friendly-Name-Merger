@@ -15,7 +15,16 @@
     busy: false
   };
 
-  function status(message, error = false) {
+   function status(message, error = false) {
+    if (!error && state.source && !state.mapping && !state.busy) {
+      try {
+        inspectSource();
+      } catch (sourceError) {
+        message = `Source mapping needs attention: ${sourceError.message}`;
+        error = true;
+      }
+    }
+
     $("status").textContent = message;
     $("status").className = error ? "status error" : "status";
   }
