@@ -284,7 +284,7 @@
 
       if (!book.SheetNames.length) throw new Error("No worksheets were found.");
       installFile(kind, book, file.name);
-      status("File loaded. Check the selected worksheet, then run the merge.");
+      if (state.source && !state.mapping) {   try {     inspectSource();     status("Both files loaded. Check the worksheets, then run the merge.");   } catch (sourceError) {     status(`Source mapping needs attention: ${sourceError.message}`, true);   } } else {   status("File loaded. Check the selected worksheet, then run the merge."); }
     } catch (error) {
       status(error.message, true);
     } finally {
