@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cloud Account Friendly Name Merger</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script defer src="./vendor/xlsx.full.min.js"></script>
+  <script defer src="./app.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-content">
+      <div>
+        <h1>Cloud Account Friendly Name Merger</h1>
+        <p>Insert friendly names in Column B while keeping destination rows in order.</p>
+      </div>
+      <div class="header-actions">
+        <span class="privacy-badge">Files processed locally in your browser</span>
+        <button id="load-demo" type="button" disabled>Load Demo Files</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <aside class="info-banner">
+      <strong>How the merge works</strong>
+      <p>
+        Match each destination Cloud Account Number to its source friendly name.
+        Insert <strong>Cloud Account Friendly Name</strong> as Column B,
+        move the original Column B to Column C, and keep repeated account
+        rows in their original order.
+      </p>
+    </aside>
+
+    <nav class="steps" aria-label="Merge progress">
+      <div id="step-source" class="step active">
+        <span class="step-number">1</span>
+        <div><small>STEP 1</small><strong>Upload Source Mapping</strong></div>
+      </div>
+      <div id="step-destination" class="step">
+        <span class="step-number">2</span>
+        <div><small>STEP 2</small><strong>Upload Destination File</strong></div>
+      </div>
+      <div id="step-merge" class="step">
+        <span class="step-number">3</span>
+        <div><small>STEP 3</small><strong>Validate &amp; Download</strong></div>
+      </div>
+    </nav>
+
+    <p id="status" class="status" role="status" aria-live="polite">
+      Preparing spreadsheet tools…
+    </p>
+
+    <section class="card" aria-labelledby="source-title">
+      <div class="card-heading">
+        <h2 id="source-title">Source / Mapping Spreadsheet</h2>
+        <p>
+          Choose an .xlsx, .xls, or .csv file containing
+          Cloud Account Number and Cloud Account Friendly Name.
+        </p>
+      </div>
+
+      <label class="upload-zone" id="source-drop" for="source-file">
+        <span class="upload-icon" aria-hidden="true">↑</span>
+        <strong>Click to upload source file</strong>
+        <span>or drag and drop</span>
+        <small>Supports Excel (.xlsx, .xls) and CSV (.csv)</small>
+        <input id="source-file" type="file" accept=".xlsx,.xls,.csv" disabled>
+      </label>
+
+      <div id="source-details" class="file-details" hidden>
+        <p id="source-filename" class="filename"></p>
+        <label for="source-sheet">Source worksheet</label>
+        <select id="source-sheet"></select>
+        <div id="source-metrics" class="metrics"></div>
+        <h3>Sample source mappings</h3>
+        <div id="source-preview" class="table-scroll"></div>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="destination-title">
+      <div class="card-heading">
+        <h2 id="destination-title">Destination Workbook</h2>
+        <p>
+          Choose the file to update. Its first column must be
+          Cloud Account Number. A new Column B will hold the friendly names.
+        </p>
+      </div>
+
+      <label class="upload-zone destination-zone"
+             id="destination-drop" for="destination-file">
+        <span class="upload-icon" aria-hidden="true">↑</span>
+        <strong>Click to upload destination file</strong>
+        <span>or drag and drop</span>
+        <small>Supports Excel (.xlsx, .xls) and CSV (.csv)</small>
+        <input id="destination-file" type="file"
+               accept=".xlsx,.xls,.csv" disabled>
+      </label>
+
+      <div id="destination-details" class="file-details" hidden>
+        <p id="destination-filename" class="filename"></p>
+        <label for="destination-sheet">Destination worksheet to update</label>
+        <select id="destination-sheet"></select>
+        <div id="destination-metrics" class="metrics"></div>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="merge-title">
+      <div class="card-heading merge-heading">
+        <div>
+          <h2 id="merge-title">Step 3: Validate Integrity &amp; Merge Output</h2>
+          <p>Review the audit and inserted Column B before downloading.</p>
+        </div>
+        <button id="run-merge" type="button" disabled>Run Merge &amp; Audit</button>
+      </div>
+
+      <div id="merge-results" hidden>
+        <div id="audit-message" class="audit-message" role="status"></div>
+
+        <h3>Validation summary &amp; audit metrics</h3>
+        <div id="audit-metrics" class="metrics"></div>
+
+        <h3>Integrity checks</h3>
+        <div id="audit-checks" class="audit-checks"></div>
+
+        <div class="preview-toolbar">
+          <h3>Merged Output Preview</h3>
+          <label class="filter-label" for="filter-rows">
+            Filter rows
+            <input id="filter-rows" type="search" placeholder="Search output…">
+          </label>
+          <button id="download-output" type="button" disabled>
+            Download Updated Excel (.xlsx)
+          </button>
+        </div>
+
+        <div id="output-preview" class="table-scroll"></div>
+
+        <div class="pagination">
+          <span id="preview-count"></span>
+          <div>
+            <button id="previous-page" type="button" disabled>Previous</button>
+            <span id="page-number"></span>
+            <button id="next-page" type="button" disabled>Next</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <p class="format-note">
+      Account numbers should be stored as text to retain leading zeros.
+      Spreadsheet formatting, formulas, and other workbook features
+      require separate validation.
+    </p>
+
+    <noscript>
+      <p>This tool needs JavaScript enabled in your browser.</p>
+    </noscript>
+  </main>
+
+  <footer>
+    Files are processed in your browser and are not uploaded to a server.
+    Output: <strong>Updated_Cloud_Account_Friendly_Names.xlsx</strong>
+  </footer>
+</body>
+</html>
